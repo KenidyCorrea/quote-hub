@@ -1,12 +1,17 @@
-// services/quoteService.ts
-import { createClient } from "@supabase/supabase-js";
+import { createSupabaseBrowserClient } from "@/app/lib/supabase/browser";
 
-const supabase = createClient(
-    process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
-);
+type QuoteFormPayload = {
+    name: string;
+    email: string;
+    company: string;
+    projectType: string;
+    budget: string;
+    timeline: string;
+    description: string;
+};
 
 export const getQuoteOptions = async () => {
+    const supabase = createSupabaseBrowserClient();
     const [projectTypes, budgets, timelines] = await Promise.all([
         supabase.from("project_types").select("*").order("label"),
         supabase.from("budget_ranges").select("*").order("label"),
@@ -24,7 +29,8 @@ export const getQuoteOptions = async () => {
     };
 };
 
-export const createQuote = async (formData: any) => {
+export const createQuote = async (formData: QuoteFormPayload) => {
+    const supabase = createSupabaseBrowserClient();
     const { error } = await supabase.from("quotes").insert({
         name: formData.name,
         email: formData.email,

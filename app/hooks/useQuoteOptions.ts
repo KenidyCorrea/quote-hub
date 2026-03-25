@@ -27,6 +27,5 @@ export const useQuoteOptions = () => {
             .then(setData)
             .finally(() => setLoading(false));
     }, []);
-    console.log()
     return { ...data, loading };
 };

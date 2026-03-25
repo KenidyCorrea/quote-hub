@@ -20,7 +20,7 @@ export default function QuoteForm() {
   const [isLoading, setIsLoading] = useState(false);
   const [isSuccess, setIsSuccess] = useState(false);
   const [submittedEmail, setSubmittedEmail] = useState("");
-  const { projectTypes, budgets, timelines, loading } = useQuoteOptions();
+  const { projectTypes, budgets, timelines } = useQuoteOptions();
   const [formData, setFormData] = useState<FormData>({
     name: "",
     email: "",
