@@ -6,6 +6,7 @@ import { LockKeyhole, LoaderCircle } from "lucide-react";
 import { FormEvent, useMemo, useState } from "react";
 
 import { Button } from "@/app/components/ui/button";
+import { loginStyles } from "@/app/hooks/use-styles";
 import { createSupabaseBrowserClient } from "@/app/lib/supabase/browser";
 
 function getSafeRedirectPath(nextPath: string | null) {
@@ -51,71 +52,72 @@ export default function LoginForm() {
   };
 
   return (
-    <main className="min-h-screen bg-[radial-gradient(circle_at_top,_rgba(14,165,233,0.18),_transparent_36%),linear-gradient(135deg,_#020617,_#0f172a_55%,_#111827)] px-4 py-10 text-slate-100">
-      <div className="mx-auto flex min-h-[calc(100vh-5rem)] max-w-6xl items-center justify-center">
-        <div className="grid w-full overflow-hidden rounded-[32px] border border-white/10 bg-white/6 shadow-[0_32px_120px_rgba(15,23,42,0.45)] backdrop-blur xl:grid-cols-[1.1fr_0.9fr]">
-          <section className="hidden border-r border-white/10 bg-white/6 p-10 xl:block">
-            <div className="flex h-full flex-col justify-between">
-              <div className="space-y-6">
-                <div className="inline-flex items-center gap-2 rounded-full border border-cyan-400/30 bg-cyan-400/10 px-4 py-2 text-sm text-cyan-100">
-                  <span className="h-2 w-2 rounded-full bg-cyan-300" />
-                  QuoteHub admin
+    <>
+      <style>{loginStyles}</style>
+
+      <main className="lg-root">
+        <div className="lg-bg" />
+        <div className="lg-noise" />
+
+        <div className="lg-shell">
+          <div className="lg-topbar">
+            <div className="lg-brand">QuoteHub Admin</div>
+            <Link className="lg-link" href="/">
+              Voltar ao site
+            </Link>
+          </div>
+
+          <section className="lg-panel">
+            <div className="lg-aside">
+              <div>
+                <div className="lg-badge">
+                  <span className="lg-badge-text">Acesso restrito</span>
                 </div>
 
-                <div className="space-y-4">
-                  <h1 className="max-w-xl text-5xl font-semibold tracking-tight text-white">
-                    Gerencie pedidos de orçamentos.
-                  </h1>
-                  <p className="max-w-lg text-lg leading-8 text-slate-300">
-                    O site continua publico para receber novos pedidos, enquanto
-                    o painel admin fica acessivel apenas para usuarios
-                    autenticados.
+                <div className="mt-8">
+                  <h2 className="lg-side-title">
+                    Entre para gerenciar <em>orcamentos</em>
+                  </h2>
+                  <p className="lg-side-copy">
+                    O site publico continua captando novos pedidos enquanto o
+                    time acompanha detalhes, historico e respostas na area
+                    administrativa.
                   </p>
                 </div>
               </div>
 
-              <div className="grid gap-4 md:grid-cols-2">
-                <div className="rounded-3xl border border-white/10 bg-slate-950/45 p-5">
-                  <p className="text-sm uppercase tracking-[0.3em] text-slate-400">
-                    Fluxo
-                  </p>
-                  <p className="mt-3 text-2xl font-semibold text-white">
-                    Login, painel, resposta
-                  </p>
+              <div className="lg-points">
+                <div className="lg-point">
+                  <span className="lg-point-label">Fluxo</span>
+                  <div className="lg-point-value">Login, painel, resposta</div>
                 </div>
-                <div className="rounded-3xl border border-white/10 bg-slate-950/45 p-5">
-                  <p className="text-sm uppercase tracking-[0.3em] text-slate-400">
-                    Base
-                  </p>
-                  <p className="mt-3 text-2xl font-semibold text-white">
-                    Quotes + messages
-                  </p>
+                <div className="lg-point">
+                  <span className="lg-point-label">Base</span>
+                  <div className="lg-point-value">Quotes e mensagens centralizadas</div>
+                </div>
+                <div className="lg-point">
+                  <span className="lg-point-label">Origem</span>
+                  <div className="lg-point-value">Pedidos enviados pela landing page</div>
                 </div>
               </div>
             </div>
-          </section>
 
-          <section className="flex items-center justify-center p-6 sm:p-10">
-            <div className="w-full max-w-md space-y-8">
-              <div className="space-y-4">
-                <div className="inline-flex items-center gap-3 rounded-full border border-white/10 bg-white/8 px-4 py-2 text-sm text-slate-200">
-                  <LockKeyhole className="h-4 w-4" />
-                  Acesso restrito
+            <div className="lg-form-card">
+              <div className="lg-form-head">
+                <div className="lg-badge">
+                  <LockKeyhole className="h-4 w-4 text-[#e6b830]" />
+                  <span className="lg-badge-text">Entrar no painel</span>
                 </div>
-                <div>
-                  <h2 className="text-3xl font-semibold text-white">
-                    Entrar no painel
-                  </h2>
-                  <p className="mt-3 text-sm leading-7 text-slate-300">
-                    Use um usuario ja criado no Supabase Auth para acessar o
-                    painel de orcamentos.
-                  </p>
-                </div>
+                <h2 className="lg-form-title">Acesse sua conta</h2>
+                <p className="lg-form-desc">
+                  Use seu e-mail e senha para continuar. Se a autenticacao for
+                  concluida, voce sera redirecionado para a area administrativa.
+                </p>
               </div>
 
-              <form className="space-y-5" onSubmit={handleSubmit}>
-                <div className="space-y-2">
-                  <label className="text-sm font-medium text-slate-200" htmlFor="email">
+              <form className="lg-form" onSubmit={handleSubmit}>
+                <div className="lg-field">
+                  <label className="lg-label" htmlFor="email">
                     E-mail
                   </label>
                   <input
@@ -123,15 +125,15 @@ export default function LoginForm() {
                     type="email"
                     value={email}
                     onChange={(event) => setEmail(event.target.value)}
-                    className="w-full rounded-2xl border border-white/10 bg-slate-950/60 px-4 py-3 text-white outline-none transition focus:border-cyan-400/60 focus:ring-2 focus:ring-cyan-400/30"
+                    className="lg-input"
                     placeholder="admin@empresa.com"
                     autoComplete="email"
                     required
                   />
                 </div>
 
-                <div className="space-y-2">
-                  <label className="text-sm font-medium text-slate-200" htmlFor="password">
+                <div className="lg-field">
+                  <label className="lg-label" htmlFor="password">
                     Senha
                   </label>
                   <input
@@ -139,24 +141,16 @@ export default function LoginForm() {
                     type="password"
                     value={password}
                     onChange={(event) => setPassword(event.target.value)}
-                    className="w-full rounded-2xl border border-white/10 bg-slate-950/60 px-4 py-3 text-white outline-none transition focus:border-cyan-400/60 focus:ring-2 focus:ring-cyan-400/30"
+                    className="lg-input"
                     placeholder="Sua senha"
                     autoComplete="current-password"
                     required
                   />
                 </div>
 
-                {errorMessage ? (
-                  <p className="rounded-2xl border border-rose-400/30 bg-rose-400/10 px-4 py-3 text-sm text-rose-100">
-                    {errorMessage}
-                  </p>
-                ) : null}
+                {errorMessage ? <p className="lg-error">{errorMessage}</p> : null}
 
-                <Button
-                  type="submit"
-                  className="h-12 w-full rounded-2xl bg-cyan-400 text-slate-950 hover:bg-cyan-300"
-                  disabled={isSubmitting}
-                >
+                <Button type="submit" className="lg-submit" disabled={isSubmitting}>
                   {isSubmitting ? (
                     <>
                       <LoaderCircle className="h-4 w-4 animate-spin" />
@@ -168,17 +162,10 @@ export default function LoginForm() {
                 </Button>
               </form>
 
-              <p className="text-sm leading-7 text-slate-400">
-                O restante do site continua publico em{" "}
-                <Link className="text-cyan-300 hover:text-cyan-200" href="/">
-                  /
-                </Link>
-                .
-              </p>
             </div>
           </section>
         </div>
-      </div>
-    </main>
+      </main>
+    </>
   );
 }

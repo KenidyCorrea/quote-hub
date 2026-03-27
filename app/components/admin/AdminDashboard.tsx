@@ -405,23 +405,8 @@ export default function AdminDashboard({
               <h1 className="ad-title">
                 Gerencie seus <em>orcamentos</em>
               </h1>
-              <p className="ad-subtitle">
-                A area administrativa agora conversa visualmente com a landing:
-                mesma atmosfera, tipografia e ritmo de leitura, sem perder os
-                filtros, a paginação e o historico de respostas.
-              </p>
             </div>
 
-            <aside className="ad-session">
-              <div>
-                <div className="ad-session-label">Sessao ativa</div>
-                <div className="ad-session-value">{currentUserEmail}</div>
-              </div>
-              <div className="ad-subtitle">
-                Consulte os quotes recebidos, abra os detalhes e registre
-                respostas com o mesmo tom visual do restante do site.
-              </div>
-            </aside>
           </section>
 
           <section className="ad-stats">
