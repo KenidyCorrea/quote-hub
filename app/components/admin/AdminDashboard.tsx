@@ -1,6 +1,5 @@
 "use client";
 
-import Link from "next/link";
 import { useRouter } from "next/navigation";
 import {
   Eye,
@@ -28,7 +27,6 @@ import AdminModal from "./AdminModal";
 
 type AdminDashboardProps = {
   budgets: QuoteOption[];
-  currentUserEmail: string;
   currentUserId: string;
   filters: QuoteFilters;
   initialQuotes: QuoteRecord[];
@@ -128,7 +126,6 @@ function hasSameFilters(left: QuoteFilters, right: QuoteFilters) {
 
 export default function AdminDashboard({
   budgets,
-  currentUserEmail,
   currentUserId,
   filters,
   initialQuotes,
@@ -280,32 +277,35 @@ export default function AdminDashboard({
     setIsSendingReply(true);
     setActionError(null);
 
-    const { data, error } = await supabase
-      .from("quote_messages")
-      .insert({
+    const response = await fetch("/api/admin/replies", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
         message: replyText.trim(),
-        quote_id: selectedQuote.id,
-        user_id: currentUserId,
-      })
-      .select("id, quote_id, user_id, message, created_at")
-      .single();
+        quoteId: selectedQuote.id,
+      }),
+    });
 
-    if (error) {
-      setActionError(error.message);
+    const result = (await response.json()) as {
+      data?: QuoteMessage;
+      emailError?: string | null;
+      error?: string;
+      statusError?: string | null;
+      updatedAt?: string;
+    };
+
+    if (!response.ok || !result.data || !result.updatedAt) {
+      setActionError(result.error ?? "Nao foi possivel salvar a resposta.");
       setIsSendingReply(false);
       return;
     }
 
-    const nextUpdatedAt = new Date().toISOString();
-    const { error: statusError } = await supabase
-      .from("quotes")
-      .update({
-        status: "answered",
-        updated_at: nextUpdatedAt,
-      })
-      .eq("id", selectedQuote.id);
+    const nextUpdatedAt = result.updatedAt;
+    const savedMessage = result.data;
 
-    setMessages((currentMessages) => [...currentMessages, data as QuoteMessage]);
+    setMessages((currentMessages) => [...currentMessages, savedMessage]);
     setReplyText("");
     setIsSendingReply(false);
     setSelectedQuote((currentQuote) =>
@@ -333,9 +333,17 @@ export default function AdminDashboard({
         : updatedQuotes;
     });
 
-    if (statusError) {
+    if (result.statusError && result.emailError) {
       setActionError(
-        `A resposta foi salva, mas o status do quote nao foi atualizado: ${statusError.message}`,
+        `A resposta foi salva, mas houve falhas no status e no e-mail: ${result.statusError} | ${result.emailError}`,
+      );
+    } else if (result.statusError) {
+      setActionError(
+        `A resposta foi salva, mas o status do quote nao foi atualizado: ${result.statusError}`,
+      );
+    } else if (result.emailError) {
+      setActionError(
+        `A resposta foi salva, mas o e-mail nao foi enviado: ${result.emailError}`,
       );
     }
 
@@ -688,7 +696,7 @@ export default function AdminDashboard({
 
       <AdminModal
         className="ad-modal-panel--reply"
-        description="Registre uma resposta interna ou historico de contato na tabela quote_messages."
+        description="Salve a resposta no historico e envie um e-mail ao cliente via Resend."
         onClose={closeReplyModal}
         open={isReplyOpen && !!selectedQuote}
         title="Responder orcamento"
@@ -761,12 +769,12 @@ export default function AdminDashboard({
                   {isSendingReply ? (
                     <>
                       <LoaderCircle className="h-4 w-4 animate-spin" />
-                      Salvando...
+                      Enviando...
                     </>
                   ) : (
                     <>
                       <Send className="h-4 w-4" />
-                      Salvar resposta
+                      Enviar resposta
                     </>
                   )}
                 </button>

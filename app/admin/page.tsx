@@ -170,7 +170,6 @@ export default async function AdminPage({ searchParams }: AdminPageProps) {
   return (
     <AdminDashboard
       budgets={(budgetsResponse.data ?? []) as QuoteOption[]}
-      currentUserEmail={user.email ?? ""}
       currentUserId={user.id}
       filters={filters}
       initialQuotes={(quotesResponse.data ?? []) as QuoteRecord[]}
